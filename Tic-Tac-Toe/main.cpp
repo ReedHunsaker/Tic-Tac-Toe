@@ -165,9 +165,6 @@ int game_over_board(string winner, int code, string loser){
 
 }
 
-
-
-
 int check(){
     /*Checks to see if anyone has won the game yet. 
     Returns 1 for win, returns 0 for the game isn't over, and a -1 for a tie
@@ -275,8 +272,15 @@ int main() {
     player2.set_mark(player2_mark);
 
     //game loop
+
     while (!game_over){
+
+        //prints the board
+
         print_board(player1.get_name(), player2.get_name());
+
+        //Checks whos turn it is
+
         if (current_player % 2 == 0){
             cout <<"\n"<< player1.get_name() << " ("<< player1.get_mark() << "):\n\nChoose a square: ";
             cin >> choice;
@@ -288,6 +292,8 @@ int main() {
         else{
             choice = 0;
         }
+
+        //sets mark to the players mark
         
         if (current_player % 2 == 0){
             mark = player1.get_mark();
@@ -295,12 +301,19 @@ int main() {
         else if (current_player % 2 == 1){
             mark = player2.get_mark();
         }
+
+        //updates the square with the mark
+
         square[choice] = mark; 
+
+        //Checks to see if anyone has won
         
         check_marker = check();
         
         if (check_marker == 1 && current_player % 2 == 0){
+            
             //player1 wins
+
             check_play_again = game_over_board(player1.get_name(), check_marker, player2.get_name());
             if (check_play_again == 1){
                 reset_board();
@@ -308,7 +321,9 @@ int main() {
             
         }
         else if (check_marker == 1 && current_player % 2 == 1){
+            
             //player2 wins
+
             check_play_again = game_over_board(player2.get_name(), check_marker, player1.get_name());
             if (check_play_again == 1){
                 reset_board();
@@ -318,7 +333,9 @@ int main() {
             }
         }
         else if (check_marker == -1){
+
             //tie
+
             check_play_again = game_over_board(player1.get_name(), check_marker, player2.get_name());
             if (check_play_again == 1){
                 reset_board();
@@ -328,6 +345,9 @@ int main() {
             }
         }
         else{
+
+            //switches players
+
             current_player++;
         }
         
@@ -336,5 +356,3 @@ int main() {
     
     return 0;
 }
-
-
