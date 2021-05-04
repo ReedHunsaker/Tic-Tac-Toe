@@ -7,11 +7,12 @@
 
 #include <iostream>
 #include <charconv>
+#include <fstream>
 
 
 using namespace std;
 
-char square[10] = {'O', '1','2','3','4','5','6','7','8','9'};
+char square[10] = {'O','1','2','3','4','5','6','7','8','9'};
 
 class Players{
     string player_name;
@@ -36,6 +37,7 @@ void Players::set_mark(char player_mark){
     mark = player_mark;
 }
 
+
 void print_board(string player1, string player2){
     system("clear");
     
@@ -46,16 +48,16 @@ void print_board(string player1, string player2){
     cout << "\n\n";
 
 
-    cout << "\t|\t |\n";
+    cout << "\t| |\n";
     cout << " " << square[1] << "  |  " << square[2] << " | " << square[3] << endl;
     cout << "____|____|____ \n";
-    cout << "\t|\t |\n";
+    cout << "\t| |\n";
     
     cout << " " << square[4] << "  |  " << square[5] << " | " << square[6] << endl;
     cout << "____|____|____ \n";
-    cout << "\t|\t |\n";
+    cout << "\t| |\n";
     cout << " " << square[7] << "  |  " << square[8] << " | " << square[9] << endl;
-    cout << "\t|\t |\n";
+    cout << "\t| |\n";
     
 }
 
@@ -66,19 +68,37 @@ void reset_board(){
     }
 }
 
-int game_over_board(string player1, int code){
+int game_over_board(string winner, int code, string loser){
     string response;
+    string text;
+
+    ofstream File;
+
+    File.open("Winners.txt", ios_base::app);
+    
     system("clear");
     
     cout << "\n\n\t\t Tic-Tac-Toe \n\n";
     if (code == 1){
-        cout << player1 << " Wins!\n\n";
+        cout << winner << " Wins!\n\n";
+        File << winner << " (W) - " << loser << " (L)\n\n";
     }
     else{
         cout << "Tie!\n\n";
     }
+
+    cout << "Match History: \n\n";
+    File.close();
+
+    ifstream ReadFile("Winners.txt");
+
+    while (getline(ReadFile, text)){
+        cout << text;
+    }
+
+    ReadFile.close();
     
-    cout << "Play again[yes/no]? ";
+    cout << "\n\nPlay again[yes/no]? ";
     cin >> response;
     
     //convert to lower case
@@ -158,9 +178,6 @@ int main(int argc, const char * argv[]) {
     player2.set_mark(player2_mark);
     
     
-//    cout << "\nPlayer 1: " << player1.get_name() << " Player 2: " << player2.get_name() << "\n";
-    
-    
 //    Save player names or make a new player profile can improve
     
     
@@ -187,13 +204,13 @@ int main(int argc, const char * argv[]) {
         else if (current_player % 2 == 1){
             mark = player2.get_mark();
         }
-        square[choice] = mark;
+        square[choice] = mark; 
         
         check_marker = check();
         
         if (check_marker == 1 && current_player % 2 == 0){
             //player1 wins
-            check_play_again = game_over_board(player1.get_name(), check_marker);
+            check_play_again = game_over_board(player1.get_name(), check_marker, player2.get_name());
             if (check_play_again == 1){
                 reset_board();
             }
@@ -201,7 +218,7 @@ int main(int argc, const char * argv[]) {
         }
         else if (check_marker == 1 && current_player % 2 == 1){
             //player2 wins
-            check_play_again = game_over_board(player2.get_name(), check_marker);
+            check_play_again = game_over_board(player2.get_name(), check_marker, player1.get_name());
             if (check_play_again == 1){
                 reset_board();
             }
@@ -211,7 +228,7 @@ int main(int argc, const char * argv[]) {
         }
         else if (check_marker == -1){
             //tie
-            check_play_again = game_over_board(player1.get_name(), check_marker);
+            check_play_again = game_over_board(player1.get_name(), check_marker, player2.get_name());
             if (check_play_again == 1){
                 reset_board();
             }
