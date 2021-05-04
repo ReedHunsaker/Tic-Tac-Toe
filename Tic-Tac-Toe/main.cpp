@@ -12,33 +12,61 @@
 
 using namespace std;
 
+//Global list to keep track of the values of each square
+
 char square[10] = {'O','1','2','3','4','5','6','7','8','9'};
 
 class Players{
+    /*
+    Class to make a player in the tic-tac-toe game
+
+    Attributes:
+        player_name (string): Name of player
+        mark (char): Single character mark that will be displayed on board
+    */
     string player_name;
-    int score;
     char mark;
+
 public:
+/*Public items of the Players class*/
+
     void set_names (string);
-    void set_score (int);
     void set_mark (char);
     string get_name() {return player_name;}
-    int get_score() {return score;}
     char get_mark() {return mark;}
 };
 
 void Players::set_names(string name){
+    /*
+    Set the players name
+
+    Arugments:
+        name (string): name of player
+    */
+
     player_name = name;
 }
-void Players::set_score(int player_score){
-    score = player_score;
-}
 void Players::set_mark(char player_mark){
+    /*
+    Set the players mark (X or O)
+
+    Arugments:
+        player_mark (char): player mark (X or O)
+    */
+
     mark = player_mark;
 }
 
 
 void print_board(string player1, string player2){
+    /*
+    Prints the board with the current state of each tile
+
+    Arugments:
+        player1 (string): Name of player 1
+        player2 (string): Name of player 2
+    */
+
     system("clear");
     
     cout << "\n\n\t\t Tic-Tac-Toe \n\n";
@@ -47,34 +75,57 @@ void print_board(string player1, string player2){
     
     cout << "\n\n";
 
+    // script to print out board with status of each square
 
-    cout << "\t| |\n";
+    cout << "    |    |\n";
     cout << " " << square[1] << "  |  " << square[2] << " | " << square[3] << endl;
     cout << "____|____|____ \n";
-    cout << "\t| |\n";
-    
+    cout << "    |    |\n";
     cout << " " << square[4] << "  |  " << square[5] << " | " << square[6] << endl;
     cout << "____|____|____ \n";
-    cout << "\t| |\n";
+    cout << "    |    |\n";
     cout << " " << square[7] << "  |  " << square[8] << " | " << square[9] << endl;
-    cout << "\t| |\n";
+    cout << "    |    |\n";
     
 }
 
 void reset_board(){
+    /*Resets the board when the user wants to play again by
+    setting each square back to it's original value
+    
+    Arguments:
+        None
+    */
+
     char reset[10] = {'O', '1','2','3','4','5','6','7','8','9'};
+
+    //Loops through each item in the reset list to reset the square list
+
     for (int i = 1; i <11; i++){
         square[i] = reset[i];
     }
 }
 
 int game_over_board(string winner, int code, string loser){
+    /*
+    Displays the outcome of the game as well as the outcome of past games
+
+    Arugments:
+        Winner (string): player that won the game
+        code (int): tells program if win or tie (1 for win or 0 for tie)
+        loser (string): Player that lost the game
+    */
+
     string response;
     string text;
 
     ofstream File;
 
+    //opens file where match history is kept
+
     File.open("Winners.txt", ios_base::app);
+
+    //clears the screen from the last board
     
     system("clear");
     
@@ -85,6 +136,7 @@ int game_over_board(string winner, int code, string loser){
     }
     else{
         cout << "Tie!\n\n";
+        File << winner << " (T) - " << loser << " (T)\n\n";
     }
 
     cout << "Match History: \n\n";
@@ -93,7 +145,7 @@ int game_over_board(string winner, int code, string loser){
     ifstream ReadFile("Winners.txt");
 
     while (getline(ReadFile, text)){
-        cout << text;
+        cout << text << endl;
     }
 
     ReadFile.close();
@@ -117,41 +169,83 @@ int game_over_board(string winner, int code, string loser){
 
 
 int check(){
+    /*Checks to see if anyone has won the game yet. 
+    Returns 1 for win, returns 0 for the game isn't over, and a -1 for a tie
+    
+    Arguments:
+        None
+    */
+
+    // Horizontal squares 1/2/3
+
     if (square[1] == square[2] && square[2] == square[3] && square[1] && square[3]){
         return 1;
     }
+
+    // Vertical squares 1/4/7
+
     else if (square[1] == square[4] && square[4] == square[7] && square[1] && square[7]){
         return 1;
     }
+
+    // Diagonal squares 1/5/9
+
     else if (square[1] == square[5] && square[5] == square[9] && square[1] == square[9]){
         return 1;
     }
+
+    // Diagonal squares 3/5/7
+
     else if (square[3] == square[5] && square[5] == square[7] && square[3] == square[7]){
         return 1;
     }
+
+    // Vertical squares 2/5/8
+
     else if (square[2] == square[5] && square[5] == square[8] && square[2] == square[8]){
         return 1;
     }
+
+    // Vertical squares 3/6/9
+
     else if (square[3] == square[6] && square[6] == square[9] && square[3] == square[9]){
         return 1;
     }
+
+    // Horizontal squares 4/5/6
+
     else if (square[4] == square[5] && square[5] == square[6] && square[4] == square[6]){
         return 1;
     }
+
+    // Horizontal squares 7/8/9
+
     else if (square[7] == square[8] && square[8] == square[9] && square[7] == square[9]){
         return 1;
     }
+
+    //Checks to see if there is still a number on the board that can be played
+
     else if(square[1] == '1' || square[2] == '2' || square[3] == '3' || square[4] == '4' || square[5] == '5' || square[6]
             == '6' || square[7] == '7' || square[8] == '8' || square[9] == '9'){
         return 0;
     }
+
+    //If there are no numbers and no winner then it is a tie
+
     else{
         return -1;
     }
 }
 
-int main(int argc, const char * argv[]) {
-    // insert code here...
+int main() {
+    /*
+    Main function that runs the program
+
+    Arguments:
+        None
+    */
+    
     string player1_name;
     string player2_name;
     int choice;
@@ -168,6 +262,9 @@ int main(int argc, const char * argv[]) {
     cout << "\n" << "player 2 Name: ";
     cin >> player2_name;
     
+
+    // Two instances of the player class
+
     Players player1;
     Players player2;
     
@@ -176,14 +273,8 @@ int main(int argc, const char * argv[]) {
     
     player1.set_mark(player1_mark);
     player2.set_mark(player2_mark);
-    
-    
-//    Save player names or make a new player profile can improve
-    
-    
-//    Input which square
-    
-    //main loop
+
+    //game loop
     while (!game_over){
         print_board(player1.get_name(), player2.get_name());
         if (current_player % 2 == 0){
