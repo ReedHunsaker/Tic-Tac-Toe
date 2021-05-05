@@ -154,6 +154,7 @@ int game_over_board(string winner, int code, string loser){
     cin >> response;
     
     //convert to lower case
+
     transform(response.begin(), response.end(), response.begin(), ::tolower);
     
     if (response== "no"){
@@ -302,7 +303,20 @@ int main() {
             mark = player2.get_mark();
         }
 
-        //updates the square with the mark
+        //Checks to make sure user put in a correct input
+
+        while(square[choice] == 'X' || square[choice] =='O'|| cin.fail()){
+
+            //clears user input so it doesn't spam the terminal
+
+            cin.clear();
+            cin.ignore();
+            cout << "Invalid input. Please try again: ";
+            cin >> choice;
+
+        }
+
+        //updates the square with the mark 
 
         square[choice] = mark; 
 
