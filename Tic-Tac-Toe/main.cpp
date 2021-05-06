@@ -8,7 +8,7 @@
 #include <iostream>
 #include <charconv>
 #include <fstream>
-
+#include <stack>
 
 using namespace std;
 
@@ -119,6 +119,12 @@ int game_over_board(string winner, int code, string loser){
     string response;
     string text;
 
+    //Stack used to display the outcome of the last 5 games
+
+    stack<string> stack;
+    string pop_out;
+
+
     ofstream File;
 
     //opens file where match history is kept
@@ -132,20 +138,51 @@ int game_over_board(string winner, int code, string loser){
     cout << "\n\n\t\t Tic-Tac-Toe \n\n";
     if (code == 1){
         cout << winner << " Wins!\n\n";
-        File << winner << " (W) - " << loser << " (L)\n\n";
+
+        //append Winner to file
+        
+        File << winner << " (W) - " << loser << " (L)\n";
     }
     else{
         cout << "Tie!\n\n";
-        File << winner << " (T) - " << loser << " (T)\n\n";
+
+        //append tie to file
+
+        File << winner << " (T) - " << loser << " (T)\n";
     }
 
-    cout << "Match History: \n\n";
     File.close();
 
     ifstream ReadFile("Winners.txt");
 
     while (getline(ReadFile, text)){
-        cout << text << endl;
+        
+        // trouble shooting code to print all lines
+        // cout << text << endl;
+        
+        //pushes each line onto the stack
+
+        stack.push(text);
+
+    }
+
+    cout << "Last 5 games: \n\n";
+
+    //Pop the last 5 games off the stack
+
+    for (int i = 1; i < 6; i++){
+        
+        //Grabs the top of the stack
+
+        pop_out = stack.top();
+
+        //Formats and prints 
+
+        cout << i << ": "<< pop_out << "\n" << endl;
+
+        //Pops top off and then gets the next
+
+        stack.pop();
     }
 
     ReadFile.close();
@@ -255,7 +292,7 @@ int main() {
     int check_play_again = 0;
     char mark = 'X';
     
-    cout << "Player 1 Name: ";
+    cout << "\nPlayer 1 Name: ";
     cin >> player1_name;
     cout << "\n" << "player 2 Name: ";
     cin >> player2_name;
@@ -305,7 +342,7 @@ int main() {
 
         //Checks to make sure user put in a correct input
 
-        while(square[choice] == 'X' || square[choice] =='O'|| cin.fail()){
+        while(square[choice] == player1.get_mark() || square[choice] == player2.get_mark()|| cin.fail()){
 
             //clears user input so it doesn't spam the terminal
 
@@ -331,6 +368,9 @@ int main() {
             check_play_again = game_over_board(player1.get_name(), check_marker, player2.get_name());
             if (check_play_again == 1){
                 reset_board();
+            }
+            else{
+                return 0;
             }
             
         }
